@@ -35,7 +35,7 @@ const mongoose = require('mongoose');
     githubusername: {
         type: String
     },
-    exprerience: [
+    experience: [
         {
             title: {
                 type: String,
