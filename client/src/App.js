@@ -5,17 +5,12 @@ import Landing from './componets/layouts/Landing';
 import Register from './componets/auth/Register';
 import Login from './componets/auth/Login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-//Redux
-import { Provider } from 'react-redux';
-import store from './Store';
-import Alert from './componets/layouts/Alert';
 
 const App = () => (
-  <Provider store={store}>
     <Router>
       <Fragment>
         <Navbar />
-        <Alert />
+        <p>{  }</p>
         <Routes>
           <Route exact path='/' element={<Landing />} />
         </Routes>
@@ -27,6 +22,5 @@ const App = () => (
         </section>
       </Fragment>
     </Router>
-  </Provider>
 );
 export default App;

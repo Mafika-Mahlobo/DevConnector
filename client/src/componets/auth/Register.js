@@ -1,11 +1,12 @@
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { setAlert } from '../../actions/alert';
-import PropTypes from 'prop-types';
 //import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { passwordNoMatch, clearAlert } from '../../state/alert';
+import { ALERT_DANGER } from '../../state/alertTypes';
 
-const Register = ({ setAlert }) => {
+
+const Register = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -13,39 +14,24 @@ const Register = ({ setAlert }) => {
         password2: ''
     });
 
+    const dispatcher = useDispatch()
+    const alertMsg = useSelector((state) => state.alert.msg);
+
     const { name, email, password, password2 } = formData;
 
     const onchange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
     const onsubmit = async (e) => {
         e.preventDefault();
-        if (password !== password2) setAlert("Passwords don't match", "danger");
+        if (password !== password2) {
+            dispatcher(passwordNoMatch({msg: 'Passowrds do not match', alertType: 'error'}));
+            setTimeout(() => {
+                dispatcher(clearAlert());
+            }, 4000);
+        } 
         else {
 
             console.log('Suuccess');
-
-            //Using axios to send a post request
-            // const userData = {
-            //     name,
-            //     email,
-            //     password
-            // }
-
-            // try {
-            //     const config = {
-            //         headers: {
-            //             "Content-Type": "application/json"
-            //         }
-            //     }
-
-            //     const body = JSON.stringify(userData);
-
-            //     const res = await axios.post('/api/users', body, config);
-            //     console.log(res.data);
-
-            // } catch (error) {
-            //     console.error(error);
-            // }
         }
     }
 
@@ -53,6 +39,7 @@ const Register = ({ setAlert }) => {
         <Fragment>
             <h1 className="large text-primary">Sign Up</h1>
             <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
+            {alertMsg && <div className={`alert alert-${ALERT_DANGER}`}>{alertMsg}</div>}
             <form className="form" onSubmit={e => onsubmit(e)}>
                 <div className="form-group">
                 <input type="text" 
@@ -106,8 +93,4 @@ const Register = ({ setAlert }) => {
     );
 };
 
-Register.prototype = {
-    setAlert: PropTypes.func.isRequired
-};
-
-export default connect(null, {setAlert})(Register);
+export default Register;
