@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 //import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { passwordNoMatch, clearAlert } from '../../state/alert';
-import { ALERT_DANGER } from '../../state/alertTypes';
-
+import { ALERT_DANGER } from '../../state/types';
+import { registerUser } from '../../state/auth';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -16,6 +16,11 @@ const Register = () => {
 
     const dispatcher = useDispatch()
     const alertMsg = useSelector((state) => state.alert.msg);
+    const { loading, errors, isAuthenticated } = useSelector(state => state.auth);
+
+    if (isAuthenticated) {
+        return (<Navigate to="/dashboard" />);
+    }
 
     const { name, email, password, password2 } = formData;
 
@@ -30,8 +35,7 @@ const Register = () => {
             }, 4000);
         } 
         else {
-
-            console.log('Suuccess');
+            dispatcher(registerUser({name, email, password})); 
         }
     }
 
@@ -40,12 +44,18 @@ const Register = () => {
             <h1 className="large text-primary">Sign Up</h1>
             <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
             {alertMsg && <div className={`alert alert-${ALERT_DANGER}`}>{alertMsg}</div>}
+            { loading && <div>Loading...</div> }
+            { errors && errors.errors.map((err, index) => {
+                return (<div key={index} className={`alert alert-${ALERT_DANGER}`}>
+                    {err.msg}
+                </div>);
+            }) }
             <form className="form" onSubmit={e => onsubmit(e)}>
                 <div className="form-group">
                 <input type="text" 
                 placeholder="Name" 
                 name="name" 
-                required 
+                // required 
                 value={name} 
                 onChange={e => onchange(e)}
                 />

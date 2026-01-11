@@ -4,23 +4,38 @@ import Navbar from './componets/layouts/Navbar';
 import Landing from './componets/layouts/Landing';
 import Register from './componets/auth/Register';
 import Login from './componets/auth/Login';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { setAuthToken } from './state/utils/setAuthToken';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { loadUser } from './state/auth';
 
-const App = () => (
-    <Router>
-      <Fragment>
-        <Navbar />
-        <p>{  }</p>
+const App = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector(state => state.auth);
+  
+  useEffect(() => {
+    if (localStorage.token) setAuthToken(localStorage.token);
+    dispatch(loadUser());
+  }, [dispatch]);
+
+  
+  return (
+  <Router>
+    <Fragment>
+      <Navbar />
+      <p>{  }</p>
+      <Routes>
+        <Route exact path='/' element={isAuthenticated ? <Navigate to="/dashboard" /> : <Landing />} />
+      </Routes>
+      <section className='container'>
         <Routes>
-          <Route exact path='/' element={<Landing />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
         </Routes>
-        <section className='container'>
-          <Routes>
-            <Route path='/register' element={<Register />} />
-            <Route path='/login' element={<Login />} />
-          </Routes>
-        </section>
-      </Fragment>
-    </Router>
-);
+      </section>
+    </Fragment>
+  </Router>
+)
+};
 export default App;
