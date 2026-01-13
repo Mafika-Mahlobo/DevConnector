@@ -9,6 +9,8 @@ import { setAuthToken } from './state/utils/setAuthToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { loadUser } from './state/auth';
+import Dashboard from './componets/dashboard/Dashboard';
+import PrivateRoute from './componets/routing/PrivateRoute';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -32,6 +34,9 @@ const App = () => {
         <Routes>
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='/dashboard' element={<Dashboard />}/>
+          </Route>
         </Routes>
       </section>
     </Fragment>
