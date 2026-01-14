@@ -1,10 +1,9 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-//import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { passwordNoMatch, clearAlert } from '../../state/alert';
+import { setAlert, clearAlert } from '../../state/alert';
 import { ALERT_DANGER } from '../../state/types';
-import { registerUser } from '../../state/auth';
+import { registerUser, clearAuthErrors } from '../../state/auth';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -14,25 +13,41 @@ const Register = () => {
         password2: ''
     });
 
+    const { errors, isAuthenticated } = useSelector(state => state.auth);
     const dispatcher = useDispatch()
-    const alertMsg = useSelector((state) => state.alert.msg);
-    const { loading, errors, isAuthenticated } = useSelector(state => state.auth);
+
+    //Invoke alert reducers
+    useEffect(() => {
+        if (errors?.errors) {
+            errors.errors.forEach(error => {
+                dispatcher(setAlert({msg: error.msg, alertType: ALERT_DANGER}));
+            });
+
+            //clcear auth errors
+            dispatcher(clearAuthErrors());
+
+            //clear alerts
+            setTimeout(() => {
+                dispatcher(clearAlert());
+            }, 3000);
+        }
+    }, [errors, dispatcher]);
+
+    const { name, email, password, password2 } = formData;
 
     if (isAuthenticated) {
         return (<Navigate to="/dashboard" />);
     }
 
-    const { name, email, password, password2 } = formData;
-
     const onchange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
-    const onsubmit = async (e) => {
+    const onsubmit = (e) => {
         e.preventDefault();
         if (password !== password2) {
-            dispatcher(passwordNoMatch({msg: 'Passowrds do not match', alertType: 'error'}));
+            dispatcher(setAlert({msg: 'Passowrds do not match', alertType: ALERT_DANGER}));
             setTimeout(() => {
                 dispatcher(clearAlert());
-            }, 4000);
+            }, 3000);
         } 
         else {
             dispatcher(registerUser({name, email, password})); 
@@ -43,19 +58,12 @@ const Register = () => {
         <Fragment>
             <h1 className="large text-primary">Sign Up</h1>
             <p className="lead"><i className="fas fa-user"></i> Create Your Account</p>
-            {alertMsg && <div className={`alert alert-${ALERT_DANGER}`}>{alertMsg}</div>}
-            { loading && <div>Loading...</div> }
-            { errors && errors.errors.map((err, index) => {
-                return (<div key={index} className={`alert alert-${ALERT_DANGER}`}>
-                    {err.msg}
-                </div>);
-            }) }
             <form className="form" onSubmit={e => onsubmit(e)}>
                 <div className="form-group">
                 <input type="text" 
                 placeholder="Name" 
                 name="name" 
-                // required 
+                required 
                 value={name} 
                 onChange={e => onchange(e)}
                 />

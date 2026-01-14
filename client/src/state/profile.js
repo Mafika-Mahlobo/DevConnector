@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { logout } from "./auth";
 import axios from "axios";
+import { setAlert } from "./alert";
+import { ALERT_SUCCESS } from "./types";
+import { Navigate } from "react-router-dom";
 
 const initialState = {
     profile: null,
@@ -16,7 +19,7 @@ export const getCurrentProfile = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const config = {
-                Headers: {
+                headers: {
                     "Content-Type": "application/json"
                 }
             };
@@ -31,11 +34,38 @@ export const getCurrentProfile = createAsyncThunk(
     }
 );
 
+// Add profile
+export const AddUserProfile = createAsyncThunk(
+    "profile/create",
+    async ({formData, edit}, thunkAPI) => {
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+
+            const res = await axios.post('/api/profile', formData, config);
+
+            thunkAPI.dispatch(setAlert({msg: edit ? "Profile edited" : "Profile created", alertType: ALERT_SUCCESS}));
+
+            if (!edit) Navigate("/dashboard");
+
+            return res.data;
+
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const profileSlice = createSlice({
     name: "profile",
     initialState,
     reducers: {
-        // Actions (owned by this slice)
+        clearProfileErrors: (state) => {
+            state.errors = null;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getCurrentProfile.pending, (state) => {
@@ -48,7 +78,19 @@ export const profileSlice = createSlice({
         .addCase(getCurrentProfile.rejected, (state, action) => {
             state.loading = false;
             state.errors = action.payload;
-        }).addCase(logout, (state) => {
+        })
+        .addCase(AddUserProfile.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(AddUserProfile.fulfilled, (state, action) => {
+            state.profile = action.payload;
+            state.loading = false;
+        })
+        .addCase(AddUserProfile.rejected, (state, action) => {
+            state.loading = false;
+            state.errors = action.payload;
+        })
+        .addCase(logout, (state) => {
             state.profile = null;
             state.errors = null;
             state.repos = []
@@ -57,3 +99,4 @@ export const profileSlice = createSlice({
 });
 
 export default profileSlice.reducer;
+export const {clearProfileErrors} = profileSlice.actions;

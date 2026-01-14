@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { loadUser } from './state/auth';
 import Dashboard from './componets/dashboard/Dashboard';
 import PrivateRoute from './componets/routing/PrivateRoute';
+import CreateProfile from './componets/profile-forms/CreateProfile';
+import Alerts from './componets/layouts/Alerts';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,16 +28,17 @@ const App = () => {
   <Router>
     <Fragment>
       <Navbar />
-      <p>{  }</p>
       <Routes>
         <Route exact path='/' element={isAuthenticated ? <Navigate to="/dashboard" /> : <Landing />} />
       </Routes>
       <section className='container'>
+      <Alerts />
         <Routes>
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />}/>
+            <Route path='/create-profile' element={<CreateProfile />} />
           </Route>
         </Routes>
       </section>

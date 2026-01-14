@@ -1,29 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from 'uuid';
 
-const initialState= {
-        id: null,
-        msg: '',
-        alertType: ''
-    };
+const initialState= []
 
 export const alertSlice =  createSlice({
     name: "alert",
     initialState,
     reducers: {
-        passwordNoMatch: (state, action) =>  {
-            state.id = uuidv4();
-            state.msg = action.payload.msg;
-            state.alertType = action.payload.alertType;
+        setAlert: (state, action) =>  {
+            state.push(
+                {id: uuidv4(),
+                 msg: action.payload.msg,
+                 alertType : action.payload.alertType
+                })
         },
 
-        clearAlert: (state) => {
-            state.id = null;
-            state.msg = '';
-            state.alertType = '';
+        clearAlert: () => {
+            return [];
         }
     }
 });
 
 export default alertSlice.reducer;
-export const { passwordNoMatch, clearAlert } = alertSlice.actions;
+export const { setAlert, clearAlert } = alertSlice.actions;

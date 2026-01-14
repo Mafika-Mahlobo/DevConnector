@@ -26,8 +26,8 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
-// @route    GET api/profile/me
-// @desc     Get current users profile
+// @route    POST api/profile/me
+// @desc     Create user profile
 // @access   private
 router.post("/", [auth, check('status', 'Status is required!').not().isEmpty(), 
     check('skills', 'Skills is required').not().isEmpty()], async (req, res) => {

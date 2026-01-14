@@ -1,9 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { loginUser } from '../../state/auth';
+import { loginUser, clearAuthErrors } from '../../state/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { ALERT_DANGER } from '../../state/types';
 import { Navigate } from 'react-router-dom';
+import { setAlert, clearAlert } from '../../state/alert';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -12,8 +13,25 @@ const Login = () => {
     });
 
     const { email, password} = formData;
-    const { errors, loading, isAuthenticated } = useSelector(state => state.auth);
+    const { errors, isAuthenticated } = useSelector(state => state.auth);
     const dispatcher = useDispatch();
+
+    //Invoke alert reducers
+    useEffect(() => {
+        if (errors?.errors) {
+            errors.errors.forEach(error => {
+                dispatcher(setAlert({msg: error.msg, alertType: ALERT_DANGER}));
+            });
+
+            //clcear auth errors
+            dispatcher(clearAuthErrors());
+
+            //clear alerts
+            setTimeout(() => {
+                dispatcher(clearAlert());
+            }, 3000);
+        }
+    }, [errors, dispatcher]);
 
     const onchange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
@@ -29,12 +47,6 @@ const Login = () => {
 
     return (
         <Fragment>
-            { loading && <div>Loading...</div> }
-            { errors && errors.errors.map((err, index) => {
-                return (<div key={index} className={`alert alert-${ALERT_DANGER}`}>
-                    {err.msg}
-                </div>);
-            }) }
             <h1 className="large text-primary">Sign In</h1>
             <form className="form" onSubmit={e => onsubmit(e)}>
                 <div className="form-group">
