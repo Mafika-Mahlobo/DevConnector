@@ -3,6 +3,9 @@ import Spinner from '../layouts/Spinner';
 import { getCurrentProfile } from '../../state/profile';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import DashboardActions from './DashboardActions';
+import Experience from './Experience';
+import Education from './Education';
 
 const Dashboard = () => {
 
@@ -21,7 +24,9 @@ const Dashboard = () => {
       <p className='lead'><i className='fas fa-user' />{'  '}Welcome { user && user.name }</p>
       { profile !== null ? 
       <Fragment>
-        Has
+        <DashboardActions />
+        <Experience experience={profile.experience} />
+        <Education education={profile.education} />
       </Fragment> : 
       <Fragment>
         <p>You have not yet setup a profile. Please add some info</p>

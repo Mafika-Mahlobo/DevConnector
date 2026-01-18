@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlert, clearAlert } from '../../state/alert'
 import { ALERT_DANGER } from '../../state/types';
 import { Link } from 'react-router-dom';
+import { getCurrentProfile } from '../../state/profile';
 
-const CreateProfile = () => {
+const EditProfile = () => {
     const [ formData, setFormData ] = useState({
         company: '', 
         website: '', 
@@ -27,7 +28,7 @@ const CreateProfile = () => {
     
     const onChange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
-    const { errors, profile } = useSelector(state => state.profile)
+    const { errors, loading, profile } = useSelector(state => state.profile)
     const dispatch = useDispatch();
 
     //Invoke alert reducers
@@ -44,22 +45,44 @@ const CreateProfile = () => {
             setTimeout(() => {
                 dispatch(clearAlert());
             }, 3000);
-
-
-            
         }
-    }, [errors, profile, dispatch]);
+
+    }, [errors, dispatch]);
+    
+
+    //Load current profile
+    useEffect(() => {
+        dispatch(getCurrentProfile());
+    }, [dispatch]);
+
+
+    //pre-populate inputs
+    useEffect(() => {
+      setFormData({
+            company: loading || !profile.company ? '': profile.company, 
+            website: loading || !profile.website ? '': profile.website, 
+            location: loading || !profile.location ? '': profile.location, 
+            bio: loading || !profile.bio ? '': profile.bio, 
+            status: loading || !profile.status ? '': profile.status, 
+            githubusername: loading || !profile.githubusername ? '': profile.githubusername, 
+            skills: loading || !profile.skills ? '': profile.skills.join(','), 
+            youtube: loading || !profile.social ? '': profile.social.youtube, 
+            facebook: loading || !profile.social ? '': profile.social.facebook, 
+            twitter: loading || !profile.social ? '': profile.social.twitter, 
+            instagram: loading || !profile.social ? '': profile.social.instagram, 
+            linkedin: loading || !profile.social ? '': profile.social.linkedin
+        });
+    }, [loading]);
 
     const onSubmit = e => {
         e.preventDefault();
-        dispatch(AddUserProfile({formData, edit: false}));
-        
+        dispatch(AddUserProfile({formData, edit: true}));  
     }
     
   return (
     <Fragment>
        <h1 className="large text-primary">
-        Create Your Profile
+        Edit Your Profile
       </h1>
       <p className="lead">
         <i className="fas fa-user"></i> Let's get some information to make your
@@ -168,4 +191,4 @@ const CreateProfile = () => {
   )
 }
 
-export default CreateProfile
+export default EditProfile
