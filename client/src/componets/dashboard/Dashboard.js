@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import DashboardActions from './DashboardActions';
 import Experience from './Experience';
 import Education from './Education';
+import { deleteAccount } from '../../state/profile';
 
 const Dashboard = () => {
 
@@ -27,6 +28,11 @@ const Dashboard = () => {
         <DashboardActions />
         <Experience experience={profile.experience} />
         <Education education={profile.education} />
+        <div className='my-2'>
+            <button onClick={() => dispatcher(deleteAccount())} className='btn btn-danger'>
+              <i className='fas fa-user-minus' /> Delete My Account
+            </button>
+        </div>
       </Fragment> : 
       <Fragment>
         <p>You have not yet setup a profile. Please add some info</p>

@@ -1,7 +1,11 @@
 import React, { Fragment } from 'react'
 import  moment from 'moment';
+import { deleteExperience } from '../../state/profile';
+import { useDispatch } from 'react-redux';
 
 const Experience = ({experience}) => {
+
+    const dispatch = useDispatch();
 
     const experiences = experience.map(exp => {
        return (
@@ -15,7 +19,7 @@ const Experience = ({experience}) => {
                 }
             </td>
             <td>
-                <button className='btn btn-danger'>Delete</button>
+                <button onClick={() => dispatch(deleteExperience(exp._id))} className='btn btn-danger'>Delete</button>
             </td>
         </tr>
         )
