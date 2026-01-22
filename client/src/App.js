@@ -17,6 +17,7 @@ import EditProfile from './componets/profile-forms/EditProfile';
 import AddExperience from './componets/profile-forms/AddExperience';
 import AddEducation from './componets/profile-forms/AddEducation';
 import Profiles from './componets/profiles/Profiles';
+import Profile from './componets/profile/Profile';
 import { clearAlert } from './state/alert';
 
 const App = () => {
@@ -52,6 +53,7 @@ const App = () => {
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path='/profiles' element={<Profiles />} />
+          <Route path='/profile/:id' element={<Profile />} />
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />}/>
             <Route path='/create-profile' element={<CreateProfile />} />

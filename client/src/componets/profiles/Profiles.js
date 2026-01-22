@@ -10,7 +10,7 @@ const Profiles = () => {
    
     useEffect(() => {
         dispatch(getProfiles());
-    }, [dispatch])
+    }, [dispatch]);
   
     return (
     <Fragment>

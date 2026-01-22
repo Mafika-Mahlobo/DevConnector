@@ -45,14 +45,14 @@ export const getProfiles = createAsyncThunk(
     }
 );
 
-//Get all profile by id
+//Get profile by id
 export const getProfileById = createAsyncThunk(
     "profile/byId",
     async (UserId, thunkAPI) => {
         try {
-            const res = await axios.get(`/api/profile/${UserId}`);
+            const res = await axios.get(`/api/profile/user/${UserId}`);
 
-            return res.data;
+            return res.data[0];
 
         } catch (error) {
             return thunkAPI.rejectWithValue(error.response.data);
@@ -203,6 +203,10 @@ export const profileSlice = createSlice({
     reducers: {
         clearProfileErrors: (state) => {
             state.errors = null;
+        },
+
+        clearProfile: (state) => {
+            state.profile = null;
         }
     },
     extraReducers: (builder) => {
@@ -301,4 +305,4 @@ export const profileSlice = createSlice({
 });
 
 export default profileSlice.reducer;
-export const {clearProfileErrors} = profileSlice.actions;
+export const {clearProfileErrors, clearProfile} = profileSlice.actions;
