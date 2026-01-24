@@ -207,6 +207,9 @@ export const profileSlice = createSlice({
 
         clearProfile: (state) => {
             state.profile = null;
+        },
+        clearRepos: (state) => {
+            state.repos = [];
         }
     },
     extraReducers: (builder) => {
@@ -305,4 +308,4 @@ export const profileSlice = createSlice({
 });
 
 export default profileSlice.reducer;
-export const {clearProfileErrors, clearProfile} = profileSlice.actions;
+export const {clearProfileErrors, clearProfile, clearRepos} = profileSlice.actions;

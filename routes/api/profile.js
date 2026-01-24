@@ -270,16 +270,29 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 router.get('/github/:username', (req, res) => {
     try {
         const options = {
-            url: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}&client_secret=${config.get('githubSecret')}`,
+            url: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created`,
             method: 'GET',
-            headers: {'user-agent': 'node.js'}
+            headers: {
+                'user-agent': 'node.js',
+                'Authorization': `token ${config.get('githubToken')}`
+            }
         };
 
         request(options, (err, response, body) => {
-            if (err) console.error(err);
+            if (err) {
+                return res.status(500).json({msg: "Github request failed"});
+            };
+
+            if (response.statusCode === 404) {
+                return res.status(404).json({ msg: `No Github profile found for ${req.params.username}` });
+            }
+
+            if (response.statusCode === 403) {
+                return res.status(403).json({msg: "Github limit rate exceeded"});
+            }
 
             if (response.statusCode !== 200) {
-                return res.status(404).json({ msg: 'No Github profile found' });
+                return res.status(500).json({msg: "Github Error"});
             }
 
             res.json(JSON.parse(body));

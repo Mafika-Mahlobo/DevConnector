@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { getProfiles } from '../../state/profile';
+import { clearProfileErrors, clearRepos, getProfiles } from '../../state/profile';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../layouts/Spinner';
 import ProfileItem from './ProfileItem';
@@ -11,6 +11,11 @@ const Profiles = () => {
     useEffect(() => {
         dispatch(getProfiles());
     }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(clearRepos());
+        dispatch(clearProfileErrors());
+    },[dispatch]);
   
     return (
     <Fragment>

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { getProfileById } from '../../state/profile';
+import { clearProfileErrors, clearRepos, getProfileById } from '../../state/profile';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../layouts/Spinner';
 import { Link, useParams } from 'react-router-dom';
@@ -7,6 +7,7 @@ import ProfileTop from './ProfileTop';
 import ProfileAbout from './ProfileAbout';
 import ProfileExperience from './ProfileExperience';
 import ProfileEducation from './ProfileEducation';
+import ProfileGithub from './ProfileGithub';
 
 const Profile = () => {
     const { loading, profile } = useSelector(state => state.profile);
@@ -47,6 +48,10 @@ const Profile = () => {
                     ))}
                 </Fragment>): (<h4>No educatioin credentials</h4>)}
             </div>
+
+            {profile.githubusername && (
+                <ProfileGithub />
+            )}
         </div>}
     </Fragment>
   )

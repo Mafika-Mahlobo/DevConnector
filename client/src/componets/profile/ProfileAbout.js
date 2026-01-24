@@ -6,7 +6,7 @@ const ProfileAbout = ({ profile }) => {
 
     <div class="profile-about bg-light p-2">
         {bio && <Fragment>
-                <h2 class="text-primary">{user.name.split(" ")[0]}'s Bio</h2>
+                <h2 className="text-primary">{user.name.split(" ")[0]}'s Bio</h2>
                 <p>
                     {bio}
                 </p>
