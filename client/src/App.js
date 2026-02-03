@@ -18,6 +18,7 @@ import AddExperience from './componets/profile-forms/AddExperience';
 import AddEducation from './componets/profile-forms/AddEducation';
 import Profiles from './componets/profiles/Profiles';
 import Profile from './componets/profile/Profile';
+import Posts from './componets/posts/Posts';
 import { clearAlert } from './state/alert';
 
 const App = () => {
@@ -60,6 +61,7 @@ const App = () => {
             <Route path='/edit-profile' element={<EditProfile />} />
             <Route path='/add-experience' element={<AddExperience />} />
             <Route path='/add-education' element={<AddEducation />} />
+            <Route path='/posts' element={<Posts />} />
           </Route>
         </Routes>
       </section>
