@@ -1,7 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setAuthToken } from "./utils/setAuthToken";
-import { AUTH_LOAD_USER, AUTH_REGISTER } from "./types";
+import { ALERT_DANGER } from "./types";
+import { setAlert } from "./alert";
+import { clearProfile, clearProfileErrors, clearRepos } from "./profile";
 
  const initialState = {
     token: localStorage.getItem('token'),
@@ -13,7 +15,7 @@ import { AUTH_LOAD_USER, AUTH_REGISTER } from "./types";
 
  //Load user
 export const loadUser = createAsyncThunk(
-    AUTH_LOAD_USER,
+    'auth/loadUser',
     async (thunkAPI) => {
         if (localStorage.token) {
             setAuthToken(localStorage.token);
@@ -40,7 +42,7 @@ export const loadUser = createAsyncThunk(
 
  //Register user
  export const registerUser = createAsyncThunk(
-    AUTH_REGISTER,
+    'auth/register',
     async ({name, email, password}, thunkAPI) => {
         try {
             const config = {
@@ -65,6 +67,7 @@ export const loadUser = createAsyncThunk(
             return res.data
 
         } catch (error) {
+            thunkAPI.dispatch(setAlert({msg: error.response.data.errors[0].msg, alertType: ALERT_DANGER}))
             return thunkAPI.rejectWithValue(error.response.data);
         }
     }
@@ -97,6 +100,7 @@ export const loadUser = createAsyncThunk(
             return res.data
 
         } catch (error) {
+            thunkAPI.dispatch(setAlert({msg: error.response.data.errors[0].msg, alertType: ALERT_DANGER}))
             return thunkAPI.rejectWithValue(error.response.data);
         }
     }
@@ -114,6 +118,9 @@ export const authSlice = createSlice({
             state.isAuthenticated = false;
             state.errors = null;
             state.loading = false;
+            clearProfile();
+            clearProfileErrors();
+            clearRepos();
         },
         clearAuthErrors: (state) => {
             state.errors = null;

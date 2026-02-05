@@ -156,10 +156,10 @@ router.put('/unlike/:id', auth, async (req, res) => {
 });
 
 // @route    POST api/posts/comment/:id
-// @desc     comment on a post routeq
+// @desc     comment on a post
 // @access   private
 router.post('/comment/:id', [auth, 
-    check('text', 'Test required').
+    check('text', 'Text required').
     not().
     isEmpty()], 
 async (req, res) => {
@@ -172,12 +172,12 @@ async (req, res) => {
         const user = await User.findById(req.user.id).select('-password');
         const post = await Post.findById(req.params.id);
 
-        const newComment = new Post({
-        text: req.body.text,
+        const newComment = {
         name: user.name,
+        text: req.body.text,
         avatar: user.avatar,
         user: req.user.id
-        });
+        };
 
         post.comments.unshift(newComment);
         await post.save();

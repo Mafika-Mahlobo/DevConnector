@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlert, clearAlert } from '../../state/alert';
+import { setAlert } from '../../state/alert';
 import { ALERT_DANGER } from '../../state/types';
-import { registerUser, clearAuthErrors } from '../../state/auth';
+import { registerUser } from '../../state/auth';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -13,25 +13,8 @@ const Register = () => {
         password2: ''
     });
 
-    const { errors, isAuthenticated } = useSelector(state => state.auth);
-    const dispatcher = useDispatch()
-
-    //Invoke alert reducers
-    useEffect(() => {
-        if (errors?.errors) {
-            errors.errors.forEach(error => {
-                dispatcher(setAlert({msg: error.msg, alertType: ALERT_DANGER}));
-            });
-
-            //clcear auth errors
-            dispatcher(clearAuthErrors());
-
-            //clear alerts
-            setTimeout(() => {
-                dispatcher(clearAlert());
-            }, 3000);
-        }
-    }, [errors, dispatcher]);
+    const { isAuthenticated } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
 
     const { name, email, password, password2 } = formData;
 
@@ -44,13 +27,10 @@ const Register = () => {
     const onsubmit = (e) => {
         e.preventDefault();
         if (password !== password2) {
-            dispatcher(setAlert({msg: 'Passowrds do not match', alertType: ALERT_DANGER}));
-            setTimeout(() => {
-                dispatcher(clearAlert());
-            }, 3000);
+            dispatch(setAlert({msg: 'Passowrds do not match', alertType: ALERT_DANGER}));
         } 
         else {
-            dispatcher(registerUser({name, email, password})); 
+            dispatch(registerUser({name, email, password})); 
         }
     }
 

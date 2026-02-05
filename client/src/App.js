@@ -20,6 +20,7 @@ import Profiles from './componets/profiles/Profiles';
 import Profile from './componets/profile/Profile';
 import Posts from './componets/posts/Posts';
 import { clearAlert } from './state/alert';
+import Post from './componets/post/Post';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const App = () => {
             <Route path='/add-experience' element={<AddExperience />} />
             <Route path='/add-education' element={<AddEducation />} />
             <Route path='/posts' element={<Posts />} />
+            <Route path='post/:id' element={<Post />} />
           </Route>
         </Routes>
       </section>

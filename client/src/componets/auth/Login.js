@@ -1,10 +1,8 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { loginUser, clearAuthErrors } from '../../state/auth';
+import { loginUser } from '../../state/auth';
 import { useSelector, useDispatch } from 'react-redux';
-import { ALERT_DANGER } from '../../state/types';
 import { Navigate } from 'react-router-dom';
-import { setAlert, clearAlert } from '../../state/alert';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -13,25 +11,8 @@ const Login = () => {
     });
 
     const { email, password} = formData;
-    const { errors, isAuthenticated } = useSelector(state => state.auth);
+    const { isAuthenticated } = useSelector(state => state.auth);
     const dispatcher = useDispatch();
-
-    //Invoke alert reducers
-    useEffect(() => {
-        if (errors?.errors) {
-            errors.errors.forEach(error => {
-                dispatcher(setAlert({msg: error.msg, alertType: ALERT_DANGER}));
-            });
-
-            //clcear auth errors
-            dispatcher(clearAuthErrors());
-
-            //clear alerts
-            setTimeout(() => {
-                dispatcher(clearAlert());
-            }, 3000);
-        }
-    }, [errors, dispatcher]);
 
     const onchange = e => setFormData({...formData, [e.target.name]: e.target.value});
 

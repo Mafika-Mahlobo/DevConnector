@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../layouts/Spinner';
-import { getPosts } from '../../state/posts';
+import { clearPost, getPosts } from '../../state/posts';
 import PostItem from './PostItem';
 import PostForm from './PostForm';
 
@@ -14,6 +14,10 @@ const Posts = () => {
         dispatch(getPosts());
     }, [dispatch]);
 
+     useEffect(() => {
+        dispatch(clearPost())
+    }, [dispatch]);
+
   return (
     loading ? <Spinner /> : <Fragment>
         <h1 className='large text-primary'>Posts</h1>
@@ -23,7 +27,7 @@ const Posts = () => {
         <PostForm />
         <div className='posts'>
             {posts.map(post => (
-                <PostItem key={post._id} post={post}/>
+                <PostItem key={post._id} post={post} showItems={true}/>
             ))}
         </div>
     </Fragment>

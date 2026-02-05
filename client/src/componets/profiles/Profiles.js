@@ -20,7 +20,7 @@ const Profiles = () => {
     return (
     <Fragment>
     {loading ? <Spinner /> : <Fragment>
-        <h1 className='larg text-primary'>Delelopers</h1>
+        <h1 className='larg text-primary'>Developers</h1>
         <p className='lead'>
             <i className='fab fa-connectdevelop' /> Browse and connect with Developers
         </p>
